@@ -1,11 +1,20 @@
-const { getUserPlaylists } = require('../services/youtubeServices.js');
+const { fetchPlaylists } = require("../services/youtubeServices");
 
-exports.getPlaylists = async (req, res) => {
+async function getUserPlaylists(req, res) {
   try {
-    const playlists = await getUserPlaylists(req.query.accessToken);
-    res.status(200).json(playlists);
+    const accessToken = req.headers.authorization.split(" ")[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: "Access token required" });
+    }
+
+    const playlists = await fetchPlaylists(accessToken);
+    res.json({ items: playlists });
   } catch (error) {
-    console.error('Error fetching playlists:', error);
-    res.status(500).json({ error: 'Failed to fetch playlists' });
+    console.error("Error fetching playlists:", error);
+    res.status(500).json({ error: "Failed to fetch playlists" });
   }
+}
+
+module.exports = {
+  getUserPlaylists,
 };

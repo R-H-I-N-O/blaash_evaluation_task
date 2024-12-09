@@ -2,12 +2,7 @@ import PlaylistCard from './PlaylistManager/PlaylistCard';
 import VideoDetails from './PlaylistManager/VideoDetails';
 import { IoLinkSharp } from "react-icons/io5";
 
-const PlaylistManager = () => {
-  const playlists = Array(9).fill({
-    title: 'Product Playlists Name',
-    videos: 5,
-    thumbnail: '/path-to-thumbnail.jpg',
-  });
+const PlaylistManager = ({playlists}) => {
 
   return (
    <div className='flex flex-col gap-3 w-full'>

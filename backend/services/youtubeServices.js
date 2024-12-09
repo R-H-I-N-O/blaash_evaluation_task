@@ -1,22 +1,27 @@
-const axios = require('axios');
-const { apiKey } = require('../config/youtubeApi');
+const { google } = require("googleapis");
+const { oauth2Client } = require("../utils/googleAuth");
 
-exports.getUserPlaylists = async (accessToken) => {
-  try {
-    const response = await axios.get('https://www.googleapis.com/youtube/v3/playlists', {
-      params: {
-        part: 'snippet',
-        mine: true,
-        maxResults: 12,
-        key: apiKey,
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+const youtube = google.youtube("v3");
 
-    return response.data.items;
-  } catch (error) {
-    throw new Error('Error fetching YouTube playlists: ' + error.message);
-  }
+async function fetchPlaylists(accessToken) {
+  oauth2Client.setCredentials({ access_token: accessToken });
+
+  const response = await youtube.playlists.list({
+    part: "snippet,contentDetails",
+    mine: true,
+    maxResults: 10,
+    auth: oauth2Client,
+  });
+
+  return response.data.items.map((playlist) => ({
+    id: playlist.id,
+    title: playlist.snippet.title,
+    description: playlist.snippet.description,
+    thumbnail: playlist.snippet.thumbnails.medium.url,
+    itemCount: playlist.contentDetails.itemCount,
+  }));
+}
+
+module.exports = {
+  fetchPlaylists,
 };

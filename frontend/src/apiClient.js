@@ -1,28 +1,26 @@
 const API_BASE_URL = process.env.REACT_APP_API_KEY || "";
 console.log("base url",API_BASE_URL);
 
-const fetchPlaylists = async (accessToken) => {
+// src/apiClient.js
+
+const fetchYouTubePlaylists = async () => {
     try {
-      const url = new URL(`${API_BASE_URL}/api/playlists`);
-      url.searchParams.append('accessToken', accessToken);
-  
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-  
+      const response = await fetch("http://localhost:5000/playlists");
       if (!response.ok) {
-        throw new Error(`Error fetching playlists: ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const data = await response.json();
-      return data;
+      return data.items.map((item) => ({
+        title: item.snippet.title,
+        videos: item.contentDetails.itemCount,
+        thumbnail: item.snippet.thumbnails.medium.url,
+      }));
     } catch (error) {
-      console.error('Error fetching playlists:', error);
-      throw error;
+      console.error("Error fetching YouTube playlists:", error);
+      throw error; // Propagate the error for handling in the calling function
     }
   };
+  
   
 
 const sendOtp = async (formData) => {
@@ -68,5 +66,5 @@ const signIn = async (formData) => {
 }
 
 export {
-    sendOtp, signIn, fetchPlaylists
+    sendOtp, signIn, fetchYouTubePlaylists
 }

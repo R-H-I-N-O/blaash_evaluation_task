@@ -9,9 +9,9 @@ function App() {
 
   const routes = createRoutesFromElements(
     <>
-      <Route path='/' element={<SignIn />}></Route>
+      <Route path='/sign-in' element={<SignIn />}></Route>
 
-      {isLoggedIn && (<Route path='/dashboard' element={<Dashboard/>}></Route>
+      {isLoggedIn && (<Route path='/' element={<Dashboard/>}></Route>
         )}
       
       <Route path='*' element={<Navigate to="/"/>}/>

@@ -3,29 +3,24 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
+  secure: false, // For non-SSL connections, use true for SSL
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-// Send Email
-exports.sendEmail = async (email, otp) => {
-  try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Your OTP Code',
-      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Failed to send OTP email');
-  }
+const mailOptions = {
+  from: 'your-email@protonmail.com',
+  to: 'recipient@example.com',
+  subject: 'Test Email',
+  text: 'This is a test email sent using ProtonMail Bridge.',
 };
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log('Error:', error);
+  } else {
+    console.log('Email sent:', info.response);
+  }
+});
